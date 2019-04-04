@@ -1,0 +1,54 @@
+buildscript {
+    ext {
+        springBootVersion = "${SPRING_BOOT_VERSION}"
+    }
+    repositories {
+        maven { url '$REPOSITORIES_MAVEN_URL' }
+        mavenCentral()
+        maven { url 'https://repo.spring.io/milestone' }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+plugins {
+    id "org.springframework.boot"
+    id 'java'
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+group = "${PROJECT_GROUP}"
+version = "${PROJECT_VERSION}"
+sourceCompatibility = "${JAVA_VERSION}"
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+ext {
+    set('springCloudVersion', "${SPRING_CLOUD_VERSION}")
+}
+
+repositories {
+    maven { url '$REPOSITORIES_MAVEN_URL' }
+    mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
+}
+
+
+dependencies {
+    //测试
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+
+    compileOnly 'org.projectlombok:lombok'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}

@@ -1,0 +1,26 @@
+
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+    }
+    resolutionStrategy {
+        eachPlugin {
+            // Work around https://github.com/gradle/gradle/issues/1697.
+            if (requested.version == null) {
+                def pluginName = requested.id.name.split('-').collect { it.capitalize() }.join().uncapitalize()
+                def versionPropertyName = (requested.id.id == 'org.springframework.boot') ?
+                        "SPRING_BOOT_VERSION" : "${pluginName}PluginVersion"
+                logger.info("Checking for plugin version property '$versionPropertyName'.")
+                if (gradle.rootProject.hasProperty(versionPropertyName)) {
+                    def version = gradle.rootProject.properties[versionPropertyName]
+                    logger.info("Setting '${requested.id.id}' plugin version to $version.")
+                    useVersion version
+                } else {
+                    logger.warn("No version specified for plugin '${requested.id.id}' and property " +
+                            "'$versionPropertyName' does not exist.")
+                }
+            }
+        }
+    }
+}
+rootProject.name = 'helper'
